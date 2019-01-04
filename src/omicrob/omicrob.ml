@@ -13,6 +13,7 @@ let default_arch       = 32
 let default_ocamlc_options = [ "-g"; "-w"; "A"; "-safe-string"; "-strict-sequence"; "-strict-formats"; "-ccopt"; "-D__OCAML__" ]
 let default_cxx_options = [ "-g"; "-Wall"; "-O"; "-std=c++11" ]
 let default_avr_cxx_options = [ "-g"; "-fno-exceptions"; "-Wall"; "-std=c++11"; "-O2"; "-Wnarrowing"; "-Wl,-Os"; "-fdata-sections"; "-ffunction-sections"; "-Wl,-gc-sections" ]
+let default_arm_cxx_options = [ "-g"; "-fno-exceptions"; "-fno-unwind-tables"; "-Wall"; "-std=c++11"; "-O2"; "-Wnarrowing"; "-Wl,-Os"; "-fdata-sections"; "-ffunction-sections"; "-Wl,-gc-sections"; "-mcpu=cortex-m0"; "-mthumb" ]
 
 let default_config = ref Device_config.arduboyConfig
 let set_config name =
@@ -246,6 +247,8 @@ let input_byte   = ref None
 let input_avr    = ref None
 let input_elf    = ref None
 let input_hex    = ref None
+let input_arm_elf = ref None
+let input_combined_hex = ref None
 
 let input_prgms  = ref []
 
@@ -254,6 +257,8 @@ let output_c     = ref None
 let output_elf   = ref None
 let output_avr   = ref None
 let output_hex   = ref None
+let output_arm_elf = ref None
+let output_combined_hex = ref None
 
 (***)
 
@@ -276,6 +281,8 @@ let push_input_file path =
   | ".avr"         -> set_file "input" ".avr"  input_avr  path
   | ".elf"         -> set_file "input" ".elf"  input_elf  path
   | ".hex"         -> set_file "input" ".hex"  input_hex  path
+  | ".arm_elf" -> set_file "input" ".arm_elf" input_arm_elf path
+  | ".combined_hex" -> set_file "input" ".combined_hex" input_combined_hex path
   | _              -> error "don't know what to do with input file %S" path
 
 let push_output_file path =
@@ -285,6 +292,8 @@ let push_output_file path =
   | ".elf"  -> set_file "output" ".elf"  output_elf  path
   | ".avr"  -> set_file "output" ".avr"  output_avr  path
   | ".hex"  -> set_file "output" ".hex"  output_hex  path
+  | ".arm_elf" -> set_file "output" ".arm_elf" output_arm_elf path
+  | ".combined_hex" -> set_file "output" ".combined_hex" output_combined_hex path
   | _       -> error "don't know what to do to generate output file %S" path
 
 (******************************************************************************)
@@ -334,6 +343,8 @@ let input_byte       = !input_byte
 let input_avr        = !input_avr
 let input_elf        = !input_elf
 let input_hex        = !input_hex
+let input_arm_elf    = !input_arm_elf
+let input_combined_hex = !input_combined_hex
 
 let input_prgms      = List.rev !input_prgms
 
@@ -342,6 +353,8 @@ let output_c         = !output_c
 let output_elf       = !output_elf
 let output_avr       = !output_avr
 let output_hex       = !output_hex
+let output_arm_elf   = !output_arm_elf
+let output_combined_hex = !output_combined_hex
 
 let libdir =
   if local then Filename.concat Config.builddir "lib"
@@ -588,7 +601,9 @@ let () =
     let cmd = if trace > 0 then cmd @ [ "-ccopt"; "-DDEBUG=" ^ string_of_int trace ] else cmd in
     let cmd = cmd @ List.flatten (List.map (fun cxxopt -> [ "-ccopt"; cxxopt ]) cxxopts) in
     let cmd = cmd @ input_paths @ [ "-o"; output_path ] in
-    let cmd = cmd @ [ "-open"; Printf.sprintf "Avr.%s" !default_config.pins_module ] in
+    let cmd = cmd @ (if (!default_config.typeD = AVR)
+              then [ "-open"; Printf.sprintf "Avr.%s" !default_config.pins_module ]
+              else []) in
     run ~vars cmd;
 
     let cmd = [ Config.ocamlclean; output_path; "-o"; output_path ] in
@@ -699,7 +714,8 @@ let available_elf = !available_elf
 let available_avr = ref input_avr
 
 let () =
-  if !default_config.typeD = AVR && (available_c <> None && (flash || output_avr <> None || no_output_requested)) then (
+  if !default_config.typeD = AVR && available_c <> None &&
+     (flash || output_avr <> None || output_hex <> None || no_output_requested) then (
     should_be_none_file input_avr;
     should_be_none_file input_elf;
     should_be_none_file input_hex;
@@ -738,7 +754,7 @@ let available_avr = !available_avr
 let available_hex = ref input_hex
 
 let () =
-  if !default_config.typeD = AVR && (available_avr <> None && (flash || output_hex <> None || no_output_requested)) then (
+  if !default_config.typeD = AVR && available_avr <> None && (flash || output_hex <> None || no_output_requested) then (
     should_be_none_file input_hex;
 
     let input_path =
@@ -763,12 +779,108 @@ let () =
   )
 
 (******************************************************************************)
-(* Compile a .c into a .arm.elf TODO *)
+(* Compile a .c into a .arm_elf *)
+
+let available_arm_elf = ref input_arm_elf
+
+let () =
+  if !default_config.typeD = MICROBIT && available_c <> None &&
+     (flash || output_arm_elf <> None || output_hex <> None || output_combined_hex <> None || no_output_requested) then (
+    should_be_none_file input_arm_elf;
+    should_be_none_file input_hex;
+    should_be_none_file input_combined_hex;
+
+    let input_path = match available_c with
+      | None -> error "no input file to generate a .arm_elf"
+      | Some p -> p in
+
+    let o_output_path = get_first_defined [
+        output_arm_elf;
+        output_hex;
+        output_combined_hex;
+        Some input_path;
+      ] ".arm_o"
+
+    and output_path = get_first_defined [
+        output_arm_elf;
+        output_hex;
+        output_combined_hex;
+        Some input_path;
+      ] ".arm_elf" in
+
+    available_arm_elf := Some output_path;
+
+    let cmd = [ Config.arm_cxx ] @ default_arm_cxx_options in
+    let cmd = cmd @ [ "-D__MBED__" ] in
+    (* TODO les includes *)
+    let cmd = cmd @ [ "-o"; o_output_path ] @ [ "-c"; input_path ] in
+    run cmd;
+
+    let cmd = [ Config.arm_cxx ] @ default_arm_cxx_options in
+    let cmd = cmd @ [ "-Wl,--start-group" ] in
+    (* TODO les links *)
+    let cmd = cmd @ [ "-lnosys"; "-lstdc++"; "-lsupc++"; "-lm"; "-lc"; "-lgcc"; "-lstdc++"; "-lsupc++"; "-lm"; "-lc"; "-lgcc" ] in
+    let cmd = cmd @ [ "-Wl,--end-group"; "--specs=nano.specs" ] in
+    let cmd = cmd @ [ "-o"; output_path ] @ [ o_output_path ] in
+    run cmd
+  )
+
+let available_arm_elf = !available_arm_elf
 
 (******************************************************************************)
 (* Compile a .arm.elf into a .hex targetting microbit TODO *)
 
+let () =
+  if !default_config.typeD = MICROBIT && available_arm_elf <> None &&
+     (flash || output_hex <> None || output_combined_hex <> None || no_output_requested) then (
+
+    should_be_none_file input_hex;
+    should_be_none_file input_combined_hex;
+
+    let input_path = match available_arm_elf with
+      | None -> error "no input file to generate a .hex"
+      | Some p -> p in
+
+    let output_path = get_first_defined [
+        output_hex;
+        output_combined_hex;
+        Some input_path;
+      ] ".hex" in
+
+    available_hex := Some output_path;
+
+    let cmd = [ Config.arm_objcopy; "-O"; "ihex"; input_path; output_path ] in
+    run cmd
+  )
+
 let available_hex = !available_hex
+
+(******************************************************************************)
+(* Combine microbit .hex with it's bootloader to make .combined_hex TODO *)
+
+let available_combined_hex = ref input_combined_hex
+
+let () =
+  if !default_config.typeD = MICROBIT && available_hex <> None &&
+     (flash || output_combined_hex <> None || no_output_requested) then (
+
+    should_be_none_file input_combined_hex;
+
+    let input_path = match available_arm_elf with
+      | None -> error "no input file to generate a .hex"
+      | Some p -> p in
+
+    let output_path = get_first_defined [
+        output_combined_hex;
+        Some input_path;
+      ] ".combined_hex" in
+
+    let cmd = [ "srec_cat"; input_path ] in
+    let cmd = cmd @ [ "-intel"; "-o"; output_path; "-intel"; "--line-length=44" ] in
+    run cmd
+  )
+
+let available_combined_hex = !available_combined_hex
 
 (******************************************************************************)
 (* Simul *)

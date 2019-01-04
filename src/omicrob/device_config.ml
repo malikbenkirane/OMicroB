@@ -1,5 +1,5 @@
 (** Type of device *)
-type device_type = AVR
+type device_type = AVR | MICROBIT
 
 (** Config for a given avr device *)
 type config = {
@@ -42,16 +42,28 @@ let arduinoUnoConfig: config = {
   pins_module = "ArduinoUnoPins";
 }
 
+let microbitConfig: config = {
+  typeD = MICROBIT;
+  mmcu = "nrf51";
+  avr = "";
+  baud = 0;
+  clock = 0;
+  device_def = "DEVICE_MICROBIT";
+  pins_module = "MicrobitPins";
+}
+
 (** Choose se correct config according to name *)
 let get_config name = match name with
   | "arduboy" -> arduboyConfig
   | "arduino-mega" -> arduinoMegaConfig
   | "arduino-uno" -> arduinoUnoConfig
+  |  "microbit" -> microbitConfig
   | _ -> invalid_arg "choose_config"
 
 (** Get the names of all configs *)
 let all_config_names () = [
   "arduboy";
   "arduino-mega";
-  "arduino-uno"
+  "arduino-uno";
+  "microbit";
 ]

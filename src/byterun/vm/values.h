@@ -5,6 +5,8 @@
 
 #ifdef __AVR__
 #include <avr/pgmspace.h>
+#elif defined(__MBED__)
+#define PROGMEM
 #else
 #define __PC__
 #define PROGMEM

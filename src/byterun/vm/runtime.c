@@ -40,6 +40,8 @@
 
 #ifdef __AVR__
 #include "../avr/avrlib.c"
+#elif defined(__MBED__)
+// TODO
 #else
 #include "../simul/simul.c"
 #include "../simul/shared.c"
