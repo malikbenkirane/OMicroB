@@ -98,8 +98,22 @@ value caml_unsafe_bytes_of_string(value s) {
 
 /******************************************************************************/
 
-void caml_microbit_test() {
-  microbit_test();
+value caml_microbit_print_string(value s) {
+  #ifdef __OCAML__
+  microbit_print_string(String_val(s));
+  #else
+  int n = string_length(s); int i;
+  char buf[n+1];
+  for(i = 0; i < n; i++) buf[i] = String_field(s, i);
+  buf[n] = '\0';
+  microbit_print_string(buf);
+  #endif
+  return Val_unit;
+}
+
+value caml_microbit_print_int(value i) {
+  microbit_print_int(Int_val(i));
+  return Val_unit;
 }
 
 /******************************************************************************/

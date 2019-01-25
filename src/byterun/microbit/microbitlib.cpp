@@ -1,10 +1,11 @@
-#ifdef __OCAML__
-#else
 #include "MicroBit.h"
 
 MicroBit uBit;
 
-void microbit_test() {
-  uBit.display.scroll("OCaml!");
+void microbit_print_string(char *str) {
+  uBit.display.scroll(str);
 }
-#endif
+
+void microbit_print_int(int i) {
+  uBit.display.scroll(i);
+}
