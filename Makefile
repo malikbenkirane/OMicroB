@@ -43,6 +43,7 @@ install: all
 	cp -a src/byterun/prims "$(INCLUDEDIR)/"
 	cp -a src/byterun/simul "$(INCLUDEDIR)/"
 	cp -a src/byterun/avr "$(INCLUDEDIR)/"
+	cp -a src/byterun/microbit "$(INCLUDEDIR)/"
 	cp -a src/byterun/stdlib "$(INCLUDEDIR)/"
 
 uninstall:

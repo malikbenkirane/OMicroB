@@ -783,6 +783,22 @@ let () =
 
 let available_arm_elf = ref input_arm_elf
 
+let microbitdir =
+  if local then Filename.concat Config.builddir "src/byterun/microbit"
+  else Filename.concat Config.includedir "microbit"
+
+let conc_microbit s = Filename.concat microbitdir s
+
+let rec interpose s l = match l with
+  | [] -> []
+  | t::q -> [s; t]@(interpose s q)
+
+let rec interleave l1 l2 = match (l1, l2) with
+  | [],[] -> []
+  | [],_ -> invalid_arg "interleave"
+  | _,[] -> invalid_arg "interleave"
+  | t1::q1, t2::q2 -> [t1; t2]@(interleave q1 q2)
+
 let () =
   if !default_config.typeD = MICROBIT && available_c <> None &&
      (flash || output_arm_elf <> None || output_hex <> None || output_combined_hex <> None || no_output_requested) then (
@@ -810,18 +826,36 @@ let () =
 
     available_arm_elf := Some output_path;
 
+    let to_include = [ "mbed-classic/api"; "mbed-classic/hal"; "mbed-classic/cmsis";
+                       (* TODO include nrf51-sdk, snif *)
+                       "ble"; "ble/ble"; "ble/ble/services";
+                       "ble-nrf51822/source"; "ble-nrf51822/source/common";
+                       "ble-nrf51822/source/btle"; "ble-nrf51822/source/btle/custom";
+                       "microbit-dal/inc/core"; "microbit-dal/inc/types"; "microbit-dal/inc/drivers";
+                       "microbit-dal/inc/bluetooth"; "microbit-dal/inc/platform";
+                       "microbit/inc" ] in
+
     let cmd = [ Config.arm_cxx ] @ default_arm_cxx_options in
-    let cmd = cmd @ [ "-D__MBED__" ] in
-    (* TODO les includes *)
+    let cmd = cmd @ [ "-D__MBED__"; "-DNDEBUG" ; "-DTOOLCHAIN_GCC"; "-DTOOLCHAIN_ARM_GCC"; "-DMBED_OPERATORS";
+                      "-DNRF51"; "-DTARGET_NORDIC"; "-DTARGET_M0"; "-DMCU_NORDIC_16K";
+                      "-DTARGET_NRF51_MICROBIT"; "-DTARGET_MCU_NORDIC_16K"; "-DTARGET_MCU_NRF51_16K_S110";
+                      "-DTARGET_NRF_LFCLK_RC"; "-D__CORTEX_M0"; "-DARM_MATH_CM0" ] in
+    let cmd = cmd @ (interpose "-I" (List.map conc_microbit to_include)) in
     let cmd = cmd @ [ "-o"; o_output_path ] @ [ "-c"; input_path ] in
     run cmd;
 
-    let cmd = [ Config.arm_cxx ] @ default_arm_cxx_options in
+    let to_link = [ "microbit"; "microbit-dal"; "ble-nrf51822"; "ble"; "nrf51-sdk"; "mbed-classic" ] in
+    let link_folders = List.map (fun s -> "-L"^(conc_microbit s)) to_link
+    and link_libs = List.map (fun s -> "-l"^s) to_link in
+
+    let cmd = [ Config.arm_cxx; "-o"; output_path; o_output_path ] @ default_arm_cxx_options in
+    let cmd = cmd @ [ "-D__MBED__" ] in
+    let cmd = cmd @ [ "-Wl,-wrap,main" ] in
+    let cmd = cmd @ [ "-T"; conc_microbit "mbed-classic/cmsis/NRF51822.ld" ] in
     let cmd = cmd @ [ "-Wl,--start-group" ] in
-    (* TODO les links *)
+    let cmd = cmd @ (interleave link_folders link_libs) in
     let cmd = cmd @ [ "-lnosys"; "-lstdc++"; "-lsupc++"; "-lm"; "-lc"; "-lgcc"; "-lstdc++"; "-lsupc++"; "-lm"; "-lc"; "-lgcc" ] in
     let cmd = cmd @ [ "-Wl,--end-group"; "--specs=nano.specs" ] in
-    let cmd = cmd @ [ "-o"; output_path ] @ [ o_output_path ] in
     run cmd
   )
 
@@ -856,7 +890,7 @@ let () =
 let available_hex = !available_hex
 
 (******************************************************************************)
-(* Combine microbit .hex with it's bootloader to make .combined_hex TODO *)
+(* Combine microbit .hex with it's bootloader to make .combined_hex *)
 
 let available_combined_hex = ref input_combined_hex
 
@@ -866,7 +900,7 @@ let () =
 
     should_be_none_file input_combined_hex;
 
-    let input_path = match available_arm_elf with
+    let input_path = match available_hex with
       | None -> error "no input file to generate a .hex"
       | Some p -> p in
 
@@ -875,7 +909,9 @@ let () =
         Some input_path;
       ] ".combined_hex" in
 
-    let cmd = [ "srec_cat"; input_path ] in
+    let cmd = [ "srec_cat"; Filename.concat microbitdir "BLE_BOOTLOADER_RESERVED.hex" ] in
+    let cmd = cmd @ [ "-intel"; Filename.concat microbitdir "mbed-classic/hal/Lib/s110_nrf51822_8_0_0/s110_nrf51822_8.0.0_softdevice.hex" ] in
+    let cmd = cmd @ [ "-intel"; input_path ] in
     let cmd = cmd @ [ "-intel"; "-o"; output_path; "-intel"; "--line-length=44" ] in
     run cmd
   )

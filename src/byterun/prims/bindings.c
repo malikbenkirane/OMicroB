@@ -98,6 +98,12 @@ value caml_unsafe_bytes_of_string(value s) {
 
 /******************************************************************************/
 
+void caml_microbit_test() {
+  microbit_test();
+}
+
+/******************************************************************************/
+
 #ifdef __OCAML__
 #define String_field(val, i) String_val(val)[i]
 #endif
