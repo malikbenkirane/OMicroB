@@ -4,6 +4,10 @@
 #include <stdio.h>
 #endif
 
+#ifdef __MBED__
+#include "../microbit/microbitlib.cpp"
+#endif
+
 #include "array.c"
 #include "compare.c"
 #include "debug.c"
@@ -40,9 +44,7 @@
 
 #ifdef __AVR__
 #include "../avr/avrlib.c"
-#elif defined(__MBED__)
-#include "../microbit/microbitlib.cpp"
-#else
+#elif defined(__PC__)
 #include "../simul/simul.c"
 #include "../simul/shared.c"
 #include "../simul/sf-regs.c"

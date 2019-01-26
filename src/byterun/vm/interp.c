@@ -2466,6 +2466,9 @@ TIMSK1 |= (1 << OCIE1A);
 
   interp_init();
   gc_init();
+#ifdef __MBED__
+  microbit_init();
+#endif
   interp();
 
 
