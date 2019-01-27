@@ -525,7 +525,8 @@ let ccall arch ooid prim args =
       | "caml_avr_serial_init" | "caml_avr_serial_write" | "caml_avr_serial_read"
       | "caml_debug_trace" | "caml_debug_tracei"
       | "caml_random_init" | "caml_random_bits" | "caml_random_bool"
-      | "caml_microbit_print_string" | "caml_microbit_print_int" -> ()
+      | "caml_microbit_print_string" | "caml_microbit_print_int"
+      | "caml_microbit_write_pixel" | "caml_microbit_print_image" -> ()
       | _ ->
         let print_arg arg =
           let buf = Buffer.create 16 in
@@ -1183,15 +1184,15 @@ let exec arch prims globals code cycle_limit =
 
       | STOP -> raise Exit
 
-      | EVENT -> failwith "Evaluation failed: unexpected EVENT instruction"
-      | BREAK -> failwith "Evaluation failed: unexpected BREAK instruction"
+      | EVENT -> failwith "Evaluation faipixel: unexpected EVENT instruction"
+      | BREAK -> failwith "Evaluation faipixel: unexpected BREAK instruction"
     done;
     assert false (* Unreachable code *)
   with
   | Exit -> !pc, !ooid, !accu, !stack, globals, !last_valid_cycle
-  | Stack_overflow   -> failwith "Evaluation failed: stack overflow"
-  | Out_of_memory    -> failwith "Evaluation failed: out of memory"
-  | Division_by_zero -> failwith "Evaluation failed: division by zero"
+  | Stack_overflow   -> failwith "Evaluation faipixel: stack overflow"
+  | Out_of_memory    -> failwith "Evaluation faipixel: out of memory"
+  | Division_by_zero -> failwith "Evaluation faipixel: division by zero"
 
 (******************************************************************************)
 

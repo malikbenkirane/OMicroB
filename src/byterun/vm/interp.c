@@ -2469,6 +2469,7 @@ TIMSK1 |= (1 << OCIE1A);
 #ifdef __MBED__
   microbit_init();
 #endif
+
   interp();
 
 
@@ -2479,6 +2480,10 @@ TIMSK1 |= (1 << OCIE1A);
 
 #ifdef __AVR__
   while(1) _delay_ms(10);
+#endif
+
+#ifdef __MBED__
+  while(1) microbit_sleep(10);
 #endif
 
   return 0;
