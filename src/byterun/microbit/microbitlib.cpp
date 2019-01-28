@@ -31,3 +31,11 @@ int microbit_button_is_pressed(int b) {
   if(b == 0) return uBit.buttonA.isPressed();
   return uBit.buttonB.isPressed();
 }
+
+void microbit_digital_write(int p, int l) {
+  uBit.io.pin[p].setDigitalValue(l);
+}
+
+int microbit_digital_read(int p) {
+  return uBit.io.pin[p].getDigitalValue();
+}

@@ -13,7 +13,7 @@ let default_arch       = 32
 let default_ocamlc_options = [ "-g"; "-w"; "A"; "-safe-string"; "-strict-sequence"; "-strict-formats"; "-ccopt"; "-D__OCAML__" ]
 let default_cxx_options = [ "-g"; "-Wall"; "-O"; "-std=c++11" ]
 let default_avr_cxx_options = [ "-g"; "-fno-exceptions"; "-Wall"; "-std=c++11"; "-O2"; "-Wnarrowing"; "-Wl,-Os"; "-fdata-sections"; "-ffunction-sections"; "-Wl,-gc-sections" ]
-let default_arm_cxx_options = [ "-g"; "-fno-exceptions"; "-fno-unwind-tables"; "-Wall"; "-std=c++11"; "-O2"; "-Wnarrowing"; "-Wl,-Os"; "-fdata-sections"; "-ffunction-sections"; "-Wl,-gc-sections"; "-mcpu=cortex-m0"; "-mthumb" ]
+let default_arm_cxx_options = [ "-g"; "-fno-exceptions"; "-fno-unwind-tables"; "-Wall"; "-Wno-array-bounds"; "-std=c++11"; "-O2"; "-Wnarrowing"; "-Wl,-Os"; "-fdata-sections"; "-ffunction-sections"; "-Wl,-gc-sections"; "-mcpu=cortex-m0"; "-mthumb" ]
 
 let default_config = ref Device_config.arduboyConfig
 let set_config name =

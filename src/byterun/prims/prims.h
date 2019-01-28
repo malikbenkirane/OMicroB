@@ -33,6 +33,8 @@ void microbit_print_int(int i);
 void microbit_write_pixel(int x, int y, int l);
 void microbit_print_image(char *str);
 int microbit_button_is_pressed(int b);
+void microbit_digital_write(int p, int l);
+int microbit_digital_read(int p);
 
 /******************************************************************************/
 /******************************************************************************/

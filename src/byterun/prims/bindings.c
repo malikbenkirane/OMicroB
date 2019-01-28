@@ -138,6 +138,15 @@ value caml_microbit_button_is_pressed(value b) {
   return Val_bool(microbit_button_is_pressed(Int_val(b)));
 }
 
+value caml_microbit_digital_write(value p, value l) {
+  microbit_digital_write(Int_val(p), Int_val(l));
+  return Val_unit;
+}
+
+value caml_microbit_digital_read(value p) {
+  return Val_bool(microbit_digital_read(Int_val(p)));
+}
+
 /******************************************************************************/
 
 #ifdef __OCAML__
