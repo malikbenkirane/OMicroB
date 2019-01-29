@@ -47,3 +47,5 @@ let digital_read p =
   match unsafe_digital_read p with
   | true -> HIGH
   | false -> LOW
+
+external delay: int -> unit = "caml_microbit_delay" [@@noalloc]

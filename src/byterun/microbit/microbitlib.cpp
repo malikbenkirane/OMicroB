@@ -6,7 +6,7 @@ void microbit_init() {
   uBit.init();
 }
 
-void microbit_sleep(int ms) {
+void microbit_delay(int ms) {
   uBit.sleep(ms);
 }
 

@@ -1,7 +1,7 @@
 open MicroBit
 
 let _ =
-  print_string "OMicroB!";
+  (* print_string "OMicroB!"; *)
   (* print_int 42; *)
 
   (* print_image [[LOW;HIGH;LOW;HIGH;LOW];
@@ -18,8 +18,9 @@ let _ =
    *   else (write_pixel 4 3 LOW; write_pixel 4 4 HIGH)
    * done *)
 
-  digital_write PIN0 HIGH;
   while(true) do
-    write_pixel 1 1 (digital_read PIN1);
-    write_pixel 2 2 (digital_read PIN2)
+    digital_write PIN0 HIGH;
+    delay 500;
+    digital_write PIN0 LOW;
+    delay 500
   done

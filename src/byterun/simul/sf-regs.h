@@ -30,5 +30,6 @@ void microbit_print_image(char *str);
 int microbit_button_is_pressed(int b);
 void microbit_digital_write(int p, int l);
 int microbit_digital_read(int p);
+void microbit_delay(int ms);
 
 #endif

@@ -2483,7 +2483,7 @@ TIMSK1 |= (1 << OCIE1A);
 #endif
 
 #ifdef __MBED__
-  while(1) microbit_sleep(10);
+  while(1) microbit_delay(10);
 #endif
 
   return 0;

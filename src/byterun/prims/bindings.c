@@ -147,6 +147,11 @@ value caml_microbit_digital_read(value p) {
   return Val_bool(microbit_digital_read(Int_val(p)));
 }
 
+value caml_microbit_delay(value ms) {
+  microbit_delay(Int_val(ms));
+  return Val_unit;
+}
+
 /******************************************************************************/
 
 #ifdef __OCAML__

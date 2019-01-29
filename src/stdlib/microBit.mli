@@ -25,3 +25,5 @@ val b_is_pressed: unit -> bool
 external digital_write: pin -> level -> unit = "caml_microbit_digital_write" [@@noalloc]
 
 val digital_read: pin -> level
+
+external delay: int -> unit = "caml_microbit_delay" [@@noalloc]
