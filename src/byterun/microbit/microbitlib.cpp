@@ -39,3 +39,13 @@ void microbit_digital_write(int p, int l) {
 int microbit_digital_read(int p) {
   return uBit.io.pin[p].getDigitalValue();
 }
+
+void microbit_serial_send_char(char c) {
+  uBit.serial.sendChar(c);
+}
+
+char microbit_serial_read_char() {
+  int r = uBit.serial.read(ASYNC);
+  if(r == MICROBIT_NO_DATA) return 0;
+  else return (char) r;
+}

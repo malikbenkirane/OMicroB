@@ -49,3 +49,18 @@ let digital_read p =
   | false -> LOW
 
 external delay: int -> unit = "caml_microbit_delay" [@@noalloc]
+
+external serial_send_char: char -> unit = "caml_microbit_serial_send_char" [@@noalloc]
+
+let serial_send s = String.iter serial_send_char s
+
+external serial_read_char: unit -> char = "caml_microbit_serial_read_char" [@@noalloc]
+
+let serial_read () =
+  let s = ref ""
+  and c = ref (serial_read_char ()) in
+  while((int_of_char !c) <> 0) do
+    s := (!s^(String.make 1 !c));
+    c := (serial_read_char ())
+  done;
+  !s

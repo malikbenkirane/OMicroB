@@ -31,5 +31,7 @@ int microbit_button_is_pressed(int b);
 void microbit_digital_write(int p, int l);
 int microbit_digital_read(int p);
 void microbit_delay(int ms);
+void microbit_serial_send_char(char c);
+char microbit_serial_read_char();
 
 #endif

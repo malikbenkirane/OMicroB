@@ -152,6 +152,15 @@ value caml_microbit_delay(value ms) {
   return Val_unit;
 }
 
+value caml_microbit_serial_send_char(value c) {
+  microbit_serial_send_char((char) Int_val(c));
+  return Val_unit;
+}
+
+value caml_microbit_serial_read_char() {
+  return Val_int(microbit_serial_read_char());
+}
+
 /******************************************************************************/
 
 #ifdef __OCAML__

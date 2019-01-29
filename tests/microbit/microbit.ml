@@ -18,9 +18,15 @@ let _ =
    *   else (write_pixel 4 3 LOW; write_pixel 4 4 HIGH)
    * done *)
 
+  (* while(true) do
+   *   digital_write PIN0 HIGH;
+   *   delay 500;
+   *   digital_write PIN0 LOW;
+   *   delay 500
+   * done *)
+
   while(true) do
-    digital_write PIN0 HIGH;
-    delay 500;
-    digital_write PIN0 LOW;
-    delay 500
+    serial_send "Salut";
+    print_string (serial_read ());
+    delay 2000;
   done

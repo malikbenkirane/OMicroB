@@ -575,8 +575,17 @@ int microbit_digital_read(int p) {
   return 0;
 }
 
+#include "../stdlib/delay.h"
 void microbit_delay(int ms) {
   delay(ms);
+}
+
+void microbit_serial_send_char(char c) {
+  printf("%c", c);
+}
+
+char microbit_serial_read_char() {
+  return 0;
 }
 
 /******************************************************************************/
