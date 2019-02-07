@@ -51,7 +51,6 @@ value caml_avr_read_register(value reg) {
 
 /******************************************************************************/
 
-
 value caml_avr_serial_init(value unit){
   avr_serial_init();
   return Val_unit;
@@ -62,9 +61,12 @@ value caml_avr_serial_write(value val){
   return Val_unit;
 }
 
-
 value caml_avr_serial_read(value unit){
   return Val_int(avr_serial_read());
+}
+
+value caml_avr_millis() {
+  return Val_int(avr_millis());
 }
 
 #endif

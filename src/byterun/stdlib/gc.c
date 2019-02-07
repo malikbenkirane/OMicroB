@@ -1,4 +1,4 @@
-#ifndef __AVR__
+#ifdef __PC__
 
 #include <caml/mlvalues.h>
 #include <caml/gc.h>

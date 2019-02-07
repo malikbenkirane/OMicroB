@@ -1,5 +1,5 @@
 (** Type of device *)
-type device_type = AVR
+type device_type = AVR | ESP8266
 
 (** Config for a given avr device *)
 type config = {
@@ -42,16 +42,28 @@ let arduinoUnoConfig: config = {
   pins_module = "ArduinoUnoPins";
 }
 
+let d1MiniConfig: config = {
+  typeD = ESP8266;
+  mmcu = "esp8266ex";
+  avr = "";
+  baud = 115_200;
+  clock = 80_000_000;
+  device_def = "ESP8266_WEMOS_D1MINI";
+  pins_module = "D1MiniPins";
+}
+
 (** Choose se correct config according to name *)
 let get_config name = match name with
   | "arduboy" -> arduboyConfig
   | "arduino-mega" -> arduinoMegaConfig
   | "arduino-uno" -> arduinoUnoConfig
+  | "wemos-d1-mini" -> d1MiniConfig
   | _ -> invalid_arg "choose_config"
 
 (** Get the names of all configs *)
 let all_config_names () = [
   "arduboy";
   "arduino-mega";
-  "arduino-uno"
+  "arduino-uno";
+  "wemos-d1-mini";
 ]

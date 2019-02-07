@@ -56,6 +56,8 @@ check_command "gcc"
 check_command "avr-g++"
 check_command "avr-objcopy"
 check_command "avrdude"
+check_command "xtensa-lx106-elf-g++"
+check_command "esptool"
 check_command "ocaml"
 check_command "ocamlc"
 check_command "ocamlopt"
@@ -83,6 +85,8 @@ GXX="$(which g++)"
 AVR_GXX="$(which avr-g++)"
 AVR_OBJCOPY="$(which avr-objcopy)"
 AVRDUDE="$(which avrdude)"
+XTENSA_LX106_GXX="$(which xtensa-lx106-elf-g++)"
+ESPTOOL="$(which esptool)"
 OCAML="$(which ocaml.opt 2> /dev/null || which ocaml)"
 OCAMLOPT="$(which ocamlopt.opt 2> /dev/null || which ocamlopt)"
 OCAMLC="$(which ocamlc.opt 2> /dev/null || which ocamlc)"
@@ -148,6 +152,8 @@ GXX         := $GXX
 AVR_GXX     := $AVR_GXX
 AVR_OBJCOPY := $AVR_OBJCOPY
 AVRDUDE     := $AVRDUDE
+XTENSA_LX106_GXX := $XTENSA_LX106_GCC
+ESPTOOL     := $ESPTOOL
 OCAMLC      := $OCAMLC -w A-58-e -warn-error A -safe-string -strict-formats -strict-sequence
 OCAMLOPT    := $OCAMLOPT -w A-58-e -warn-error A -safe-string -strict-formats -strict-sequence
 OCAMLDOC    := $OCAMLDOC
@@ -182,6 +188,8 @@ let cxx         = \"$GXX\"
 let avr_cxx     = \"$AVR_GXX\"
 let avr_objcopy = \"$AVR_OBJCOPY\"
 let avrdude     = \"$AVRDUDE\"
+let xtensa_lx106_gxx  = \"$XTENSA_LX106_GXX\"
+let esptool     = \"$ESPTOOL\"
 let version     = \"$VERSION\"
 " > etc/config.ml
 

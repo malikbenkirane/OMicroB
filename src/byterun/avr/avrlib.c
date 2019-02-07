@@ -145,9 +145,6 @@ int avr_millis() {
 
 }
 
-
-
-
 /******************************************************************************/
 
 #if defined(DEVICE_ARDUINO_MEGA) || defined(DEVICE_ARDUINO_UNO)

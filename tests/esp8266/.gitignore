@@ -1,0 +1,10 @@
+*.cmi
+*.cmo
+*.c
+*.byte
+*.elf
+*.o
+*.esp_o
+*.d
+*.esp_elf
+*.bin
