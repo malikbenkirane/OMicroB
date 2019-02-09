@@ -590,6 +590,14 @@ void microbit_digital_write(int p, int l) {
   printf("Writing value %d to pin %d\n", l, p);
 }
 
+void microbit_analog_write(int p, int l) {
+  printf("Writing value %d to pin %d\n", l, p);
+}
+
+int microbit_analog_read(int p) {
+  return 0;
+}
+
 int microbit_digital_read(int p) {
   return 0;
 }
@@ -608,6 +616,6 @@ char microbit_serial_read_char() {
 }
 
 int microbit_millis() {
-  printf("millis()");
+  printf("millis()\n");
   return 0;
 }

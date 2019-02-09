@@ -26,6 +26,10 @@ external digital_write: pin -> level -> unit = "caml_microbit_digital_write" [@@
 
 val digital_read: pin -> level
 
+val analog_write: pin -> int -> unit
+
+val analog_read: pin -> int
+
 external delay: int -> unit = "caml_microbit_delay" [@@noalloc]
 
 external millis: unit -> int = "caml_microbit_millis" [@@noalloc]

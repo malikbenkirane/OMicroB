@@ -48,6 +48,21 @@ let digital_read p =
   | true -> HIGH
   | false -> LOW
 
+external unsafe_analog_write: pin -> int -> unit = "caml_microbit_analog_write" [@@noalloc]
+
+let analog_write p l =
+  if (l < 0 || l > 255) then invalid_arg "analog_write: value should be between 0 and 255";
+  if (p <> PIN0 && p <> PIN1 && p <> PIN2 && p <> PIN3 && p <> PIN4 && p <> PIN10)
+  then invalid_arg "analog_write: only pins 0, 1, 2, 3, 4 and 10 are supported";
+  unsafe_analog_write p l
+
+external unsafe_analog_read: pin -> int = "caml_microbit_analog_read" [@@noalloc]
+
+let analog_read p =
+  if (p <> PIN0 && p <> PIN1 && p <> PIN2 && p <> PIN3 && p <> PIN4 && p <> PIN10)
+  then invalid_arg "analog_write: only pins 0, 1, 2, 3, 4 and 10 are supported";
+  unsafe_analog_read p
+
 external delay: int -> unit = "caml_microbit_delay" [@@noalloc]
 
 external millis : unit -> int = "caml_microbit_millis" [@@noalloc]
@@ -65,4 +80,4 @@ let serial_read () =
     s := (!s^(String.make 1 !c));
     c := (serial_read_char ())
   done;
-  !s
+  String.sub !s 0 ((String.length !s)-1)
