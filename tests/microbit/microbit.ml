@@ -1,32 +1,57 @@
 open MicroBit
 
+(* let _ =
+ *   print_string "OMicroB!";
+ *   print_int 42;
+ *
+ *   print_image [[LOW;HIGH;LOW;HIGH;LOW];
+ *                [LOW;HIGH;LOW;HIGH;LOW];
+ *                [LOW;LOW;LOW;LOW;LOW];
+ *                [LOW;LOW;LOW;LOW;LOW];
+ *                [HIGH;HIGH;HIGH;HIGH;HIGH]];
+ *   while(true) do
+ *     if(a_is_pressed ())
+ *     then (write_pixel 0 3 HIGH; write_pixel 0 4 LOW)
+ *     else (write_pixel 0 3 LOW; write_pixel 0 4 HIGH);
+ *     if(b_is_pressed ())
+ *     then (write_pixel 4 3 HIGH; write_pixel 4 4 LOW)
+ *     else (write_pixel 4 3 LOW; write_pixel 4 4 HIGH)
+ *   done *)
+
+(* let _ =
+ *   while(true) do
+ *     digital_write PIN0 HIGH;
+ *     delay 500;
+ *     digital_write PIN0 LOW;
+ *     delay 500
+ *   done *)
+
+(* let _ =
+ *   while(true) do
+ *     serial_write ((string_of_int (millis ()))^"\n");
+ *     print_string (serial_read ()); (\* Weirdly this takes ~1s *\)
+ *     delay 2000;
+ *   done *)
+
+let rgb_of_hsv (h, s, v) =
+  let c = v *. s in let m = v -. c in
+  let x = c *. (1. -. abs_float ((mod_float (h/.60.) 2.) -. 1.)) in
+  let (r', g', b') =
+    if h < 60. then (c, x, 0.)
+    else if h < 120. then (x, c, 0.)
+    else if h < 180. then (0., c, x)
+    else if h < 240. then (0., x, c)
+    else if h < 300. then (x, 0., c)
+    else (c, 0., x) in
+  (int_of_float ((r'+.m)*.255.), int_of_float ((g'+.m)*.255.), int_of_float ((b'+.m)*.255.))
+
 let _ =
-  (* print_string "OMicroB!"; *)
-  (* print_int 42; *)
-
-  (* print_image [[LOW;HIGH;LOW;HIGH;LOW];
-   *              [LOW;HIGH;LOW;HIGH;LOW];
-   *              [LOW;LOW;LOW;LOW;LOW];
-   *              [LOW;LOW;LOW;LOW;LOW];
-   *              [HIGH;HIGH;HIGH;HIGH;HIGH]];
-   * while(true) do
-   *   if(a_is_pressed ())
-   *   then (write_pixel 0 3 HIGH; write_pixel 0 4 LOW)
-   *   else (write_pixel 0 3 LOW; write_pixel 0 4 HIGH);
-   *   if(b_is_pressed ())
-   *   then (write_pixel 4 3 HIGH; write_pixel 4 4 LOW)
-   *   else (write_pixel 4 3 LOW; write_pixel 4 4 HIGH)
-   * done *)
-
-  (* while(true) do
-   *   digital_write PIN0 HIGH;
-   *   delay 500;
-   *   digital_write PIN0 LOW;
-   *   delay 500
-   * done *)
-
+  ignore (mod_float 10. 0.);
+  let r = PIN0 and g = PIN1 and b = PIN2 in
   while(true) do
-    serial_write ((string_of_int (millis ()))^"\n");
-    print_string (serial_read ()); (* Weirdly this takes ~1s *)
-    delay 2000;
+    for h = 0 to 360 do
+      let (rv, gv, bv) = rgb_of_hsv ((float_of_int h), 1., 1.) in
+      analog_write r rv; analog_write g gv; analog_write b bv;
+      delay 10
+    done
   done
