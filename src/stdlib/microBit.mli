@@ -28,6 +28,8 @@ val digital_read: pin -> level
 
 external delay: int -> unit = "caml_microbit_delay" [@@noalloc]
 
-val serial_send: string -> unit
+external millis: unit -> int = "caml_microbit_millis" [@@noalloc]
+
+val serial_write: string -> unit
 
 val serial_read: unit -> string

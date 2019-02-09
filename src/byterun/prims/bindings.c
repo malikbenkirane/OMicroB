@@ -97,6 +97,10 @@ value caml_unsafe_bytes_of_string(value s) {
 }
 
 /******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+
+#if defined(__OCAML__) || defined(__MBED__) || defined(__PC__)
 
 value caml_microbit_print_string(value s) {
   #ifdef __OCAML__
@@ -152,8 +156,8 @@ value caml_microbit_delay(value ms) {
   return Val_unit;
 }
 
-value caml_microbit_serial_send_char(value c) {
-  microbit_serial_send_char((char) Int_val(c));
+value caml_microbit_serial_write_char(value c) {
+  microbit_serial_write_char((char) Int_val(c));
   return Val_unit;
 }
 
@@ -161,6 +165,14 @@ value caml_microbit_serial_read_char() {
   return Val_int(microbit_serial_read_char());
 }
 
+value caml_microbit_millis() {
+  return Val_int(microbit_millis());
+}
+
+#endif
+
+/******************************************************************************/
+/******************************************************************************/
 /******************************************************************************/
 
 #ifdef __OCAML__

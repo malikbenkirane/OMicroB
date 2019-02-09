@@ -50,9 +50,11 @@ let digital_read p =
 
 external delay: int -> unit = "caml_microbit_delay" [@@noalloc]
 
-external serial_send_char: char -> unit = "caml_microbit_serial_send_char" [@@noalloc]
+external millis : unit -> int = "caml_microbit_millis" [@@noalloc]
 
-let serial_send s = String.iter serial_send_char s
+external serial_write_char: char -> unit = "caml_microbit_serial_write_char" [@@noalloc]
+
+let serial_write s = String.iter serial_write_char s
 
 external serial_read_char: unit -> char = "caml_microbit_serial_read_char" [@@noalloc]
 

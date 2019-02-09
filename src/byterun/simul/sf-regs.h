@@ -18,10 +18,10 @@ uint8_t avr_read_register(uint8_t reg);
 int avr_random(int max);
 int avr_millis();
 
-
 void avr_serial_init();
 char avr_serial_read();
 void avr_serial_write(char c);
+
 
 void microbit_print_string(char *str);
 void microbit_print_int(int i);
@@ -31,7 +31,8 @@ int microbit_button_is_pressed(int b);
 void microbit_digital_write(int p, int l);
 int microbit_digital_read(int p);
 void microbit_delay(int ms);
-void microbit_serial_send_char(char c);
+void microbit_serial_write_char(char c);
 char microbit_serial_read_char();
+int microbit_millis();
 
 #endif

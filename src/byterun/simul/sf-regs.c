@@ -144,7 +144,7 @@ static void may_sleep(){
 
 /******************************/
 
-static void send_write(char cmnd, int port, unsigned char val){
+static void write_write(char cmnd, int port, unsigned char val){
   char buf[5];
   buf[0] = cmnd;
   buf[1] = port + 'A';
@@ -154,17 +154,17 @@ static void send_write(char cmnd, int port, unsigned char val){
   send_all_proc(buf, 5);
 }
 
-static void send_write_port(int port, unsigned char val){
-  /* printf("sending write %d = %d \n", port, val); */
-  send_write('W', port, val);
+static void write_write_port(int port, unsigned char val){
+  /* printf("writeing write %d = %d \n", port, val); */
+  write_write('W', port, val);
 }
 
-static void send_write_ddr(int ddr, unsigned char val){
-  send_write('T', ddr - LOWER_DDR, val);
+static void write_write_ddr(int ddr, unsigned char val){
+  write_write('T', ddr - LOWER_DDR, val);
 }
 
 
-/* static void send_config_analogs(void){ */
+/* static void write_config_analogs(void){ */
   /* static unsigned int old_analog_nb = 0xFFFF; */
   /* unsigned int analog_nb = 0; */
   /* if((regs[ADCON0] & 1) != 0){ */
@@ -181,7 +181,7 @@ static void send_write_ddr(int ddr, unsigned char val){
   /* } */
 /* } */
 
-static void send_set_analog(unsigned int chan, unsigned int val){
+static void write_set_analog(unsigned int chan, unsigned int val){
   char buf[6];
   buf[0] = 'A';
   buf[1] = hexchar_of_int(chan);
@@ -221,19 +221,19 @@ static void avr_write_register_gen(int reg, uint8_t new_val){
                 port_c, port_c);
       }else{
 	regs[reg] = new_val;
-	send_write_port(reg, new_val);
+	write_write_port(reg, new_val);
       }
     }
   }
   else if(reg >= LOWER_DDR && reg <= HIGHER_DDR){
     if(old_val != new_val){
-      send_write_ddr(reg, new_val);
+      write_write_ddr(reg, new_val);
       regs[reg] = new_val;
     }
   }
   else if(reg == SPDR){
     regs[reg] = new_val;
-    send_write_port('G'-'A',new_val);
+    write_write_port('G'-'A',new_val);
   }
   else{
     regs[reg] = new_val;
@@ -298,13 +298,13 @@ void avr_clear_bit(uint8_t reg, uint8_t bit){
                   port_c, port_c, bit, port_c, ddr_val);
         }else{
           regs[reg] = new_val;
-          send_write_port(reg, new_val);
+          write_write_port(reg, new_val);
         }
       }
     } else if(reg >= LOWER_DDR && reg <= HIGHER_DDR){
       if(old_val != new_val){
         regs[reg] = new_val;
-        send_write_ddr(reg, new_val);
+        write_write_ddr(reg, new_val);
       }
     }else{
       regs[reg] = new_val;
@@ -344,14 +344,14 @@ void avr_set_bit(uint8_t reg, uint8_t bit){
       /* } */
       /* else { */
 	regs[reg] = new_val;
-	send_write_port(reg,new_val);
+	write_write_port(reg,new_val);
       /* } */
     }
   }
   else if (reg >= LOWER_DDR && reg <= HIGHER_DDR){
     if(old_val != new_val){
       regs[reg] = new_val;
-      send_write_ddr(reg,new_val);
+      write_write_ddr(reg,new_val);
     }
   }
   else if (reg >= LOWER_PIN && reg <= HIGHER_PIN){
@@ -361,7 +361,7 @@ void avr_set_bit(uint8_t reg, uint8_t bit){
   }
   else{
   regs[reg] = new_val;
-  /* send_write_port(reg,new_val); */ // don't send internal modifications
+  /* write_write_port(reg,new_val); */ // don't send internal modifications
   }
   /* printf("set bit %d on reg %d \n", bit, reg); */
   V(sem_regs);
@@ -401,7 +401,7 @@ static void out_write_port(int port, unsigned char new_val){
     }
     if(new_val != old_val){
       regs[port] = new_val;
-      send_write_port(port, new_val);
+      write_write_port(port, new_val);
     }
   }
   V(sem_regs);
@@ -424,7 +424,7 @@ static void out_clear_port_bit(int port, int bit){
     }
     if(old_val != new_val){
       regs[port] = new_val;
-      send_write_port(port, new_val);
+      write_write_port(port, new_val);
     }
   }
   V(sem_regs);
@@ -447,7 +447,7 @@ static void out_set_port_bit(int port, int bit){
     }
     if(old_val != new_val){
       regs[port] = new_val;
-      send_write_port(port, new_val);
+      write_write_port(port, new_val);
     }
   }
   V(sem_regs);
@@ -459,7 +459,7 @@ static void out_set_analog(unsigned int chan, unsigned int val){
   {
     if(val != analogs[chan]){
       analogs[chan] = val;
-      send_set_analog(chan, val);
+      write_set_analog(chan, val);
     }
   }
   V(sem_regs);
@@ -545,6 +545,25 @@ void exec_instr(char *instr, int size){
 }
 
 /******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+
+void avr_serial_init(){
+  printf("serial init\n");
+}
+
+char avr_serial_read(){
+  printf("serial read\n");
+  return '0';
+}
+
+void avr_serial_write(char c){
+  printf("serial write(%c)\n",c);
+}
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
 
 void microbit_print_string(char *str) {
   printf("%s\n", str);
@@ -580,7 +599,7 @@ void microbit_delay(int ms) {
   delay(ms);
 }
 
-void microbit_serial_send_char(char c) {
+void microbit_serial_write_char(char c) {
   printf("%c", c);
 }
 
@@ -588,19 +607,7 @@ char microbit_serial_read_char() {
   return 0;
 }
 
-/******************************************************************************/
-/******************************************************************************/
-/******************************************************************************/
-
-void avr_serial_init(){
-  printf("serial init\n");
-}
-
-char avr_serial_read(){
-  printf("serial read\n");
-  return '0';
-}
-
-void avr_serial_write(char c){
-  printf("serial write(%c)\n",c);
+int microbit_millis() {
+  printf("millis()");
+  return 0;
 }

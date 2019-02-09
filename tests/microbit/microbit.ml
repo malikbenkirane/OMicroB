@@ -26,7 +26,7 @@ let _ =
    * done *)
 
   while(true) do
-    serial_send "Salut";
-    print_string (serial_read ());
+    serial_write ((string_of_int (millis ()))^"\n");
+    print_string (serial_read ()); (* Weirdly this takes ~1s *)
     delay 2000;
   done
