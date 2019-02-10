@@ -4,6 +4,7 @@
 
   Copyright (c) 2007 David A. Mellis
   Modified for ESP8266 platform by Ivan Grokhotkov, 2014-2015.
+  Modified for OMicroB by Basile Pesin, 2019
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -26,6 +27,8 @@
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
 
+#ifdef ESP8266_WEMOS_D1MINI
+
 #define PIN_WIRE_SDA (4)
 #define PIN_WIRE_SCL (5)
 
@@ -46,6 +49,8 @@ static const uint8_t D8   = 15;
 static const uint8_t RX   = 3;
 static const uint8_t TX   = 1;
 
-#include "../common.h"
+#endif /* WEMOS_D1MINI */
+
+#include "common.h"
 
 #endif /* Pins_Arduino_h */

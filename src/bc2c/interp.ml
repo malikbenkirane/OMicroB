@@ -524,7 +524,9 @@ let ccall arch ooid prim args =
       | "caml_avr_write_register" | "caml_avr_read_register"
       | "caml_avr_serial_init" | "caml_avr_serial_write" | "caml_avr_serial_read"
       | "caml_debug_trace" | "caml_debug_tracei"
-      | "caml_random_init" | "caml_random_bits" | "caml_random_bool" -> ()
+      | "caml_random_init" | "caml_random_bits" | "caml_random_bool"
+      | "caml_esp8266_pin_mode" | "caml_esp8266_digital_write" | "caml_esp8266_digital_read"
+      | "caml_esp8266_delay" -> ()
       | _ ->
         let print_arg arg =
           let buf = Buffer.create 16 in

@@ -41,7 +41,7 @@
 #ifdef __AVR__
 #include "../avr/avrlib.c"
 #elif defined(__ESP8266__)
-// TODO
+#include "../esp8266/esp8266lib.c"
 #elif defined(__PC__)
 #include "../simul/simul.c"
 #include "../simul/shared.c"

@@ -1,9 +1,9 @@
 include ../../etc/Makefile.conf
 
-esp8266.bin: esp8266.ml
+esp.bin: esp.ml
 	$(BIN)/omicrob -v -device=wemos-d1-mini $^ -o $@
 
-flash: esp8266.bin
+flash: esp.bin
 	$(BIN)/omicrob -v -flash -device=wemos-d1-mini $^
 
 clean:

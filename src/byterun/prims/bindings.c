@@ -30,12 +30,8 @@ value caml_avr_read_bit(value reg, value bit) {
 }
 
 value caml_avr_delay(value ms) {
-  delay(Int_val(ms));
+  stdlib_delay(Int_val(ms));
   return Val_unit;
-}
-
-value caml_avr_millis(value unit) {
-  return Val_int(avr_millis());
 }
 
 /******************************************************************************/
@@ -74,6 +70,34 @@ value caml_avr_millis() {
 /******************************************************************************/
 /******************************************************************************/
 /******************************************************************************/
+
+#if defined(__OCAML__) || defined(__ESP8266__) || defined(__PC__)
+
+value caml_esp8266_pin_mode(value pin, value mode) {
+  esp8266_pin_mode(Int_val(pin), Int_val(mode));
+  return Val_unit;
+}
+
+value caml_esp8266_digital_write(value pin, value level) {
+  esp8266_digital_write(Int_val(pin), Int_val(level));
+  return Val_unit;
+}
+
+value caml_esp8266_digital_read(value pin) {
+  return Val_int(esp8266_digital_read(Int_val(pin)));
+}
+
+value caml_esp8266_delay(value ms) {
+  esp8266_delay(Int_val(ms));
+  return Val_unit;
+}
+
+#endif
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+
 
 value caml_random_init(value n) {
   random_init(Int_val(n));
