@@ -6,7 +6,7 @@
 #ifdef __AVR__
 #include <avr/pgmspace.h>
 #elif defined(__ESP8266__)
-#define PROGMEM
+#include <avr/pgmspace.h>
 #else
 #define __PC__
 #define PROGMEM

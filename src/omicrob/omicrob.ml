@@ -13,7 +13,7 @@ let default_arch       = 32
 let default_ocamlc_options = [ "-g"; "-w"; "A"; "-safe-string"; "-strict-sequence"; "-strict-formats"; "-ccopt"; "-D__OCAML__" ]
 let default_cxx_options = [ "-g"; "-Wall"; "-O"; "-std=c++11" ]
 let default_avr_cxx_options = [ "-g"; "-fno-exceptions"; "-Wall"; "-std=c++11"; "-O2"; "-Wnarrowing"; "-Wl,-Os"; "-fdata-sections"; "-ffunction-sections"; "-Wl,-gc-sections" ]
-let default_xtensa_cxx_options = [ "-mlongcalls"; "-fno-exceptions"; "-fno-unwind-tables"; "-w"; "-Os"; "-Wl,-Os" ]
+let default_xtensa_cxx_options = [ "-mlongcalls"; "-mtext-section-literals"; "-fno-exceptions"; "-fno-unwind-tables"; "-fno-rtti"; "-w"; "-Os"; "-Wl,-Os"; "-Wl,-gc-sections"; "-ffunction-sections"; "-fdata-sections" ]
 
 let default_config = ref Device_config.arduboyConfig
 let set_config name =
@@ -816,9 +816,9 @@ let () =
     let cmd = [ Config.xtensa_lx106_gxx ] @ default_xtensa_cxx_options in
     let cmd = cmd @ [ "-U__STRICT_ANSI__"; "-D__ets__"; "-DICACHE_FLASH"; "-DFLASHMODE_DIO" ] in
     let cmd = cmd @ [ "-D"^(!default_config.device_def); "-DESP8266"; "-D__ESP8266__"; "-DARDUINO=10807" ] in
-    let cmd = cmd @ [ "-std=c++11"; "-MMD"; "-ffunction-sections"; "-fdata-sections" ] in
+    let cmd = cmd @ [ "-std=c++11"; "-MMD" ] in
     let cmd = cmd @ (List.map (fun s -> Printf.sprintf "-I%s" (conc_esp8266 s))
-                       ["arduino/sdk/include"; "arduino/sdk/lwip2"; "arduino/sdk/include/libc"]) in
+                       ["."; "cores"; "sdk/include"; "sdk/lwip2"; "sdk/include/libc"]) in
     let cmd = cmd @ [ "-c"; input_path; "-o"; o_output_path ] in
     run cmd;
 
@@ -841,13 +841,35 @@ let available_esp_elf = !available_esp_elf
 (******************************************************************************)
 (* Compile a .esp_elf into a .bin targetting esp8266 *)
 
+let available_bin = ref input_bin
+
 let () =
   if !default_config.typeD = ESP8266 && available_esp_elf <> None &&
      (flash || output_bin <> None || no_output_requested) then (
     should_be_none_file input_bin;
 
-    print_endline "TODO esp_elf -> bin"
+    let input_path = match available_esp_elf with
+      | None -> error "no input file to generate a .bin"
+      | Some p -> p in
+
+    let output_path = get_first_defined [
+        output_bin;
+        Some input_path;
+      ] ".bin" in
+
+    available_bin := Some output_path;
+
+    let cmd = [ Config.esptool ] in
+    let cmd = cmd @ [ "-eo"; (conc_esp8266 "eboot/eboot.elf") ] in
+    let cmd = cmd @ [ "-bo"; output_path ] in
+    let cmd = cmd @ [ "-bm"; "dio"; "-bz"; "4M"; "-bs"; ".text";
+                      "-bp"; "4096"; "-ec"; "-eo"; input_path;
+                      "-bs"; ".irom0.text"; "-bs"; ".text";
+                      "-bs"; ".data"; "-bs"; ".rodata"; "-bc"; "-ec" ] in
+    run cmd
   )
+
+let available_bin = !available_bin
 
 (******************************************************************************)
 (* Simul *)
@@ -869,15 +891,7 @@ let () =
 (******************************************************************************)
 (* Flash *)
 
-let () =
-  if flash then (
-    if !default_config.typeD = AVR then (
-      let path =
-        match available_hex with
-        | None -> error "no input file to flash the micro-controller"
-        | Some path -> path in
-
-      let tty =
+let tty () =
         let rec find_in_options options =
           match options with
           | "-P" :: tty :: _ -> Some tty
@@ -910,19 +924,38 @@ let () =
             List.iter (Printf.eprintf "  * %s\n") lst;
             Printf.eprintf "> Please specify a tty with option -avrdudeopts -P,/dev/ttyXXX.\n";
             exit 1;
-          | [ tty ] -> tty in
+          | [ tty ] -> tty
+
+let () =
+  if flash then (
+    if !default_config.typeD = AVR then (
+      let path =
+        match available_hex with
+        | None -> error "no input file to flash the micro-controller"
+        | Some path -> path in
 
       let cmd = if sudo then [ "sudo" ] else [] in
       let cmd = cmd @ [ Config.avrdude ] in
       let cmd = if List.mem "-c" avrdudeopts then cmd else cmd @ [ "-c"; !default_config.avr ] in
-      let cmd = if List.mem "-P" avrdudeopts then cmd else cmd @ [ "-P"; tty ] in
+      let cmd = if List.mem "-P" avrdudeopts then cmd else cmd @ [ "-P"; tty () ] in
       let cmd = if List.mem "-p" avrdudeopts then cmd else cmd @ [ "-p"; !default_config.mmcu ] in
       let cmd = if List.mem "-b" avrdudeopts then cmd else cmd @ [ "-b"; string_of_int !default_config.baud ] in
       let cmd = cmd @ avrdudeopts @ [ "-v"; "-D"; "-U"; "flash:w:" ^ path ^ ":i" ] in
       run cmd
     ) else if !default_config.typeD = ESP8266 then (
       should_be_empty_options "-avrdudeopts" avrdudeopts;
-      print_endline "TODO flash esp8266"
+
+      let path =
+        match available_bin with
+        | None -> error "no input file to flash the micro-controller"
+        | Some path -> path in
+
+      let cmd = if sudo then [ "sudo" ] else [] in
+      let cmd = cmd @ [ Config.esptool ] in
+      let cmd = cmd @ [ "-cd"; "nodemcu"; "-cp"; tty ();
+                        "-cb"; "115200"; "-ca"; "0x0";
+                        "-cf"; path] in
+      run cmd
     )
   ) else (
     should_be_empty_options "-avrdudeopts" avrdudeopts;
