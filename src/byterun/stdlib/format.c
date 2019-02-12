@@ -1,4 +1,4 @@
-#ifdef __PC__
+#if defined(__OCAML__) || defined(__PC__)
 
 #include <stdio.h>
 #include <stdint.h>
