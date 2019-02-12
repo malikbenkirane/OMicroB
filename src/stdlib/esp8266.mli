@@ -18,6 +18,7 @@ external digital_write: pin -> level -> unit = "caml_esp8266_digital_write" [@@n
 external digital_read: pin -> level = "caml_esp8266_digital_read" [@@noalloc]
 
 external delay: int -> unit = "caml_esp8266_delay" [@@noalloc]
+external millis: unit -> int = "caml_esp8266_millis" [@@noalloc]
 
 val serial_write: string -> unit
 val serial_read: unit -> string

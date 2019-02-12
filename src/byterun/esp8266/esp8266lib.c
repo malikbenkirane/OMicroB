@@ -29,6 +29,10 @@ void esp8266_delay(int ms) {
   delay(ms);
 }
 
+int esp8266_millis() {
+  return millis();
+}
+
 void esp8266_serial_write_char(char c) {
   Serial.write(c);
 }

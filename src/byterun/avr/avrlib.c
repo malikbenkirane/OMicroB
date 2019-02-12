@@ -142,7 +142,6 @@ int avr_millis() {
     millis_return = timer1_millis;
   }
   return millis_return;
-
 }
 
 /******************************************************************************/

@@ -16,6 +16,7 @@ external digital_write: pin -> level -> unit = "caml_esp8266_digital_write" [@@n
 external digital_read: pin -> level = "caml_esp8266_digital_read" [@@noalloc]
 
 external delay: int -> unit = "caml_esp8266_delay" [@@noalloc]
+external millis: unit -> int = "caml_esp8266_millis" [@@noalloc]
 
 external serial_write_char: char -> unit = "caml_esp8266_serial_write_char" [@@noalloc]
 

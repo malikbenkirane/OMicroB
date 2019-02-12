@@ -92,6 +92,10 @@ value caml_esp8266_delay(value ms) {
   return Val_unit;
 }
 
+value caml_esp8266_millis() {
+  return Val_int(esp8266_millis());
+}
+
 value caml_esp8266_serial_write_char(value c) {
   esp8266_serial_write_char((char) Int_val(c));
   return Val_unit;

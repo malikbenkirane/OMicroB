@@ -581,6 +581,11 @@ void esp8266_delay(int ms) {
   stdlib_delay(ms);
 }
 
+int esp8266_millis() {
+  printf("millis()\n");
+  return 0;
+}
+
 void esp8266_serial_write_char(char c) {
   printf("%c", c);
 }

@@ -10,7 +10,7 @@ let _ =
    * done *)
 
   while true do
-    let s = serial_read () in
-    serial_write s;
+    let _ = serial_read () in
+    serial_write (string_of_int (millis ()));
     delay 1000
   done
