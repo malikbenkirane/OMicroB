@@ -34,6 +34,8 @@ void esp8266_pin_mode(uint8_t p, uint8_t m);
 void esp8266_digital_write(uint8_t p, uint8_t l);
 uint8_t esp8266_digital_read(uint8_t p);
 void esp8266_delay(int ms);
+void esp8266_serial_write_char(char c);
+char esp8266_serial_read_char();
 
 /******************************************************************************/
 /******************************************************************************/

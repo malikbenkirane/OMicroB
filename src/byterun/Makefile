@@ -13,7 +13,8 @@ OBJECTS :=              \
   .build/format.o       \
   .build/sf-regs.o      \
   .build/shared.o       \
-  .build/simul.o
+  .build/simul.o		\
+  esp8266/wrapper.o
 
 byterun: $(TARGETS)
 
@@ -36,7 +37,11 @@ $(LIB)/libcamlrun.a: $(OBJECTS)
 	$(OCAMLC) -c -ccopt -Wall -ccopt -D__OCAML__ $<
 	mv $*.o .build/
 
+esp8266/wrapper.o: esp8266/wrapper.c
+	$(MAKE) -C esp8266
+
 clean:
 	@rm -Rf .build/ $(TARGETS)
+	$(MAKE) -C esp8266 clean
 
 .PHONY: byterun clean

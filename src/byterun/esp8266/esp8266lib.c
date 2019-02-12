@@ -28,3 +28,13 @@ uint8_t esp8266_digital_read(uint8_t pin) {
 void esp8266_delay(int ms) {
   delay(ms);
 }
+
+void esp8266_serial_write_char(char c) {
+  Serial.write(c);
+}
+
+char esp8266_serial_read_char() {
+  int incoming = Serial.read();
+  if (incoming == -1) return 0;
+  else return (char)incoming;
+}
