@@ -16,6 +16,8 @@ type level = LOW | HIGH
 external pin_mode: pin -> mode -> unit = "caml_esp8266_pin_mode" [@@noalloc]
 external digital_write: pin -> level -> unit = "caml_esp8266_digital_write" [@@noalloc]
 external digital_read: pin -> level = "caml_esp8266_digital_read" [@@noalloc]
+val analog_write: pin -> int -> unit
+val analog_read: pin -> int
 
 external delay: int -> unit = "caml_esp8266_delay" [@@noalloc]
 external millis: unit -> int = "caml_esp8266_millis" [@@noalloc]

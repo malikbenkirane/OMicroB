@@ -87,6 +87,15 @@ value caml_esp8266_digital_read(value pin) {
   return Val_int(esp8266_digital_read(Int_val(pin)));
 }
 
+value caml_esp8266_analog_write(value pin, value level) {
+  esp8266_analog_write(Int_val(pin), Int_val(level));
+  return Val_unit;
+}
+
+value caml_esp8266_analog_read(value pin) {
+  return Val_int(esp8266_analog_read(Int_val(pin)));
+}
+
 value caml_esp8266_delay(value ms) {
   esp8266_delay(Int_val(ms));
   return Val_unit;

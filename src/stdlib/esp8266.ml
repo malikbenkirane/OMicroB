@@ -14,6 +14,15 @@ type level = LOW | HIGH
 external pin_mode: pin -> mode -> unit = "caml_esp8266_pin_mode" [@@noalloc]
 external digital_write: pin -> level -> unit = "caml_esp8266_digital_write" [@@noalloc]
 external digital_read: pin -> level = "caml_esp8266_digital_read" [@@noalloc]
+external unsafe_analog_write: pin -> int -> unit = "caml_esp8266_analog_write" [@@noalloc]
+let analog_write p l =
+  if (l < 0 || l > 255) then invalid_arg "analog_write: value should be between 0 and 255";
+  unsafe_analog_write p l
+
+external unsafe_analog_read: pin -> int = "caml_esp8266_analog_read" [@@noalloc]
+let analog_read p =
+  if (p <> A0) then invalid_arg "analog_write: only pin A0 is supported";
+  unsafe_analog_read p
 
 external delay: int -> unit = "caml_esp8266_delay" [@@noalloc]
 external millis: unit -> int = "caml_esp8266_millis" [@@noalloc]
