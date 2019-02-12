@@ -831,7 +831,8 @@ let () =
     let cmd = cmd @ [ "-Teagle.flash.4m.ld"; "-Wl,--start-group" ] in
     let cmd = cmd @ [ (conc_esp8266 "arducore.a"); (conc_esp8266 "wrapper.o"); o_output_path ] in
     let cmd = cmd @ [ "-lmain"; "-lstdc++"; "-lc"; "-lgcc"; "-lm";
-                      "-lphy"; "-lpp"; "-lnet80211"; "-llwip2-536-feat"; "-lwpa"; "-lcrypto"; ] in
+                      "-lphy"; "-lpp"; "-lnet80211"; "-llwip2-536-feat"; "-lwpa"; "-lcrypto"; 
+                      "-lwpa2"; "-lwps"; "-lbearssl"; "-laxtls"; "-lsmartconfig"; "-lairkiss"; "-lespnow"; "-lhal" ] in
     let cmd = cmd @ [ "-Wl,--end-group"; "-o"; output_path ] in
     run cmd;
   )
