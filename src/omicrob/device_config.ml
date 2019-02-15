@@ -52,12 +52,23 @@ let d1MiniConfig: config = {
   pins_module = "D1MiniPins";
 }
 
+let nodemcuConfig: config = {
+  typeD = ESP8266;
+  mmcu = "esp8266ex";
+  avr = "";
+  baud = 115_200;
+  clock = 80_000_000;
+  device_def = "ESP8266_NODEMCU";
+  pins_module = "NodeMCUPins";
+}
+
 (** Choose se correct config according to name *)
 let get_config name = match name with
   | "arduboy" -> arduboyConfig
   | "arduino-mega" -> arduinoMegaConfig
   | "arduino-uno" -> arduinoUnoConfig
   | "wemos-d1-mini" -> d1MiniConfig
+  | "nodemcu" -> nodemcuConfig
   | _ -> invalid_arg "choose_config"
 
 (** Get the names of all configs *)
@@ -66,4 +77,5 @@ let all_config_names () = [
   "arduino-mega";
   "arduino-uno";
   "wemos-d1-mini";
+  "nodemcu";
 ]
