@@ -43,5 +43,12 @@ let serial_read () =
   if(String.length !s > 0) then String.sub !s 0 ((String.length !s)-1) else ""
 
 external start_server: string -> string -> unit = "caml_esp8266_start_server" [@@noalloc]
-external server_on: string -> (unit -> unit) -> unit = "caml_esp8266_server_on" [@@noalloc]
 external server_handle_client: unit -> unit = "caml_esp8266_server_handle_client" [@@noalloc]
+external server_send_html: string -> unit = "caml_esp8266_server_send_html" [@@noalloc]
+
+external unsafe_server_on: string -> (unit -> unit) -> unit = "caml_esp8266_server_on" [@@noalloc]
+let server_on route callback =
+  unsafe_server_on route (fun () -> callback ();
+                           (* We add a response at the end of the callback, in case the user didn't specify it *)
+                           server_send_html "OK")
+

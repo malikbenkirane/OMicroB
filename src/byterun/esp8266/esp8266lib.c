@@ -91,12 +91,14 @@ void esp8266_server_handle_client() {
     if(f == 0) server.send(404, "text/plain", "No callback registered for this route");
     else {
       caml_callback(callbackMap[hash], Val_unit);
-      // If the client is still connected (the callback didn't send a response, we send a default one)
-      if(server.client()) server.send(200, "text/plain", "OK");
     }
   }
 }
 
 void esp8266_server_on(char *route, int f) {
   callbackMap[hashRoute(route)] = f;
+}
+
+void esp8266_server_send_html(char *html) {
+  server.send(200, "text/html", html);
 }

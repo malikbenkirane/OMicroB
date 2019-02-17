@@ -45,6 +45,7 @@ char esp8266_serial_read_char();
 void esp8266_start_server(char *ssid, char *passwd);
 void esp8266_server_on(char *route, int f);
 void esp8266_server_handle_client();
+void esp8266_server_send_html(char *html);
 
 /******************************************************************************/
 /******************************************************************************/
