@@ -815,10 +815,12 @@ let () =
 
     let cmd = [ Config.xtensa_lx106_gxx ] @ default_xtensa_cxx_options in
     let cmd = cmd @ [ "-U__STRICT_ANSI__"; "-D__ets__"; "-DICACHE_FLASH"; "-DFLASHMODE_DIO" ] in
-    let cmd = cmd @ [ "-D"^(!default_config.device_def); "-DESP8266"; "-D__ESP8266__"; "-DARDUINO=10807" ] in
+    let cmd = cmd @ [ "-D"^(!default_config.device_def); "-DESP8266"; "-D__ESP8266__"; "-DARDUINO=10807"; "-DLWIP_OPEN_SRC" ] in
     let cmd = cmd @ [ "-std=c++11"; "-MMD" ] in
     let cmd = cmd @ (List.map (fun s -> Printf.sprintf "-I%s" (conc_esp8266 s))
-                       ["."; "cores"; "sdk/include"; "sdk/lwip2"; "sdk/include/libc"]) in
+                       ["."; "cores";
+                        "sdk/include"; "sdk/lwip2"; "sdk/include/libc";
+                        "libraries/ESP8266WiFi"; "libraries/ESP8266WebServer" ]) in
     let cmd = cmd @ [ "-c"; input_path; "-o"; o_output_path ] in
     run cmd;
 
@@ -828,11 +830,14 @@ let () =
     let cmd = cmd @ [ "-Wl,-wrap,system_restart_local"; "-Wl,-wrap,spi_flash_read" ] in
     let cmd = cmd @ (List.map (fun s -> Printf.sprintf "-L%s" (conc_esp8266 s))
                        ["sdk"; "libc"; "ld"]) in
+    let cmd = cmd @ (List.map (fun s -> Printf.sprintf "-L%s" (conc_esp8266 s))
+                       ["libraries/ESP8266WiFi"; "libraries/ESP8266WebServer"]) in (* Check if we're compiling a webserver *)
     let cmd = cmd @ [ "-Teagle.flash.4m.ld"; "-Wl,--start-group" ] in
     let cmd = cmd @ [ (conc_esp8266 "arducore.a"); (conc_esp8266 "wrapper.o"); o_output_path ] in
     let cmd = cmd @ [ "-lmain"; "-lstdc++"; "-lc"; "-lgcc"; "-lm";
-                      "-lphy"; "-lpp"; "-lnet80211"; "-llwip2-536-feat"; "-lwpa"; "-lcrypto"; 
-                      "-lwpa2"; "-lwps"; "-lbearssl"; "-laxtls"; "-lsmartconfig"; "-lairkiss"; "-lespnow"; "-lhal" ] in
+                      "-lphy"; "-lpp"; "-lnet80211"; "-lwpa"; "-lcrypto"; "-llwip";
+                      "-lwpa2"; "-lwps"; "-lbearssl"; "-laxtls"; "-lsmartconfig"; "-lairkiss"; "-lespnow"; "-lhal"; ] in
+    let cmd = cmd @ [ "-lESP8266WiFi"; "-lESP8266WebServer" ] in (* Check if we're compiling a webserver *)
     let cmd = cmd @ [ "-Wl,--end-group"; "-o"; output_path ] in
     run cmd;
   )

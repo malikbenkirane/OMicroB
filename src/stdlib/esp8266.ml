@@ -41,3 +41,6 @@ let serial_read () =
     c := (serial_read_char ())
   done;
   if(String.length !s > 0) then String.sub !s 0 ((String.length !s)-1) else ""
+
+(** Starts a server and handle requests (does not return !) *)
+external start_server: string -> string -> unit = "caml_esp8266_start_server" [@@noalloc]

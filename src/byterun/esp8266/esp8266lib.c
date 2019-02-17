@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-ESP8266WebServer server;
+ESP8266WebServer server(80);
 
 uint8_t get_pin_addr(uint8_t pin) {
   if (pin == 0) return D0;
@@ -53,4 +53,29 @@ char esp8266_serial_read_char() {
   int incoming = Serial.read();
   if (incoming == -1) return 0;
   else return (char)incoming;
+}
+
+void esp8266_start_server(char *ssid, char *passwd) {
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, passwd);
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  server.on("/", []() {
+      server.send(200, "text/plain", "The server is on !");
+    });
+
+  server.begin();
+
+  while(1) {
+    server.handleClient();
+    delay(100);
+  }
 }

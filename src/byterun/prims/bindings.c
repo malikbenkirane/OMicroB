@@ -114,6 +114,22 @@ value caml_esp8266_serial_read_char() {
   return Val_int(esp8266_serial_read_char());
 }
 
+/******************************************************************************/
+
+value caml_esp8266_start_server(value ssid, value passwd) {
+  #ifdef __OCAML__
+  esp8266_start_server(String_val(ssid), String_val(passwd));
+  #else
+  int n1 = string_length(ssid); int n2 = string_length(passwd); int i;
+  char bufssid[n1+1]; char bufpasswd[n2+1];
+  for(i = 0; i < n1; i++) bufssid[i] = String_field(ssid, i);
+  for(i = 0; i < n2; i++) bufpasswd[i] = String_field(passwd, i);
+  bufssid[n1] = '\0'; bufpasswd[n2] = '\0';
+  esp8266_start_server(bufssid, bufpasswd);
+  #endif
+  return Val_unit;
+}
+
 #endif
 
 /******************************************************************************/

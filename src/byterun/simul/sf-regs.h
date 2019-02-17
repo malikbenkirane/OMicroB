@@ -32,5 +32,6 @@ void esp8266_delay(int ms);
 int esp8266_millis();
 void esp8266_serial_write_char(char c);
 char esp8266_serial_read_char();
+void esp8266_start_server(char *ssid, char *passwd);
 
 #endif

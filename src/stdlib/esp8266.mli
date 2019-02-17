@@ -24,3 +24,6 @@ external millis: unit -> int = "caml_esp8266_millis" [@@noalloc]
 
 val serial_write: string -> unit
 val serial_read: unit -> string
+
+(** Starts a server and handle requests (does not return !) *)
+external start_server: string -> string -> unit = "caml_esp8266_start_server" [@@noalloc]
