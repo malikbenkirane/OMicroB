@@ -1,4 +1,8 @@
 #include "Arduino.h"
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+ESP8266WebServer server;
 
 uint8_t get_pin_addr(uint8_t pin) {
   if (pin == 0) return D0;

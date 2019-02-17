@@ -1,6 +1,9 @@
 include ../../etc/Makefile.conf
 
 TARGETS := $(LIB)/libcamlrun.a
+ESP8266_TARGETS := esp8266/wrapper.o \
+	esp8266/libraries/ESP8266WiFi/libESP8266WiFi.a \
+	esp8266/libraries/ESP8266WebServer/libESP8266WebServer.a
 
 HEADERS := $(wildcard */*.h)
 
@@ -13,10 +16,9 @@ OBJECTS :=              \
   .build/format.o       \
   .build/sf-regs.o      \
   .build/shared.o       \
-  .build/simul.o		\
-  esp8266/wrapper.o
+  .build/simul.o
 
-byterun: $(TARGETS)
+byterun: $(TARGETS) $(ESP8266_TARGETS)
 
 $(LIB)/libcamlrun.a: $(OBJECTS)
 	@rm -f $@
@@ -38,7 +40,13 @@ $(LIB)/libcamlrun.a: $(OBJECTS)
 	mv $*.o .build/
 
 esp8266/wrapper.o: esp8266/wrapper.c
-	$(MAKE) -C esp8266
+	$(MAKE) -C esp8266 wrapper.o
+
+esp8266/libraries/ESP8266WiFi/libESP8266WiFi.a:
+	$(MAKE) -C esp8266 libraries/ESP8266WiFi/libESP8266WiFi.a
+
+esp8266/libraries/ESP8266WebServer/libESP8266WebServer.a:
+	$(MAKE) -C esp8266 libraries/ESP8266WebServer/libESP8266WebServer.a
 
 clean:
 	@rm -Rf .build/ $(TARGETS)
