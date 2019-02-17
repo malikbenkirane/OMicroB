@@ -1,8 +1,10 @@
 #include "Arduino.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <map>
 
 ESP8266WebServer server(80);
+std::map<unsigned long, int> callbackMap;
 
 uint8_t get_pin_addr(uint8_t pin) {
   if (pin == 0) return D0;
@@ -55,6 +57,14 @@ char esp8266_serial_read_char() {
   else return (char)incoming;
 }
 
+unsigned long hashRoute(const char *str) {
+  // http://www.cse.yorku.ca/~oz/hash.html (djb2)
+  unsigned long hash = 5381;
+  int c;
+  while(c = *str++) hash = ((hash << 5) + hash) + c;
+  return hash;
+}
+
 void esp8266_start_server(char *ssid, char *passwd) {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, passwd);
@@ -68,14 +78,25 @@ void esp8266_start_server(char *ssid, char *passwd) {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  server.on("/", []() {
-      server.send(200, "text/plain", "The server is on !");
-    });
-
   server.begin();
+}
 
-  while(1) {
-    server.handleClient();
-    delay(100);
+void esp8266_server_handle_client() {
+  server.handleClient();
+  WiFiClient client = server.client();
+
+  if(client) {
+    unsigned long hash = hashRoute(server.uri().c_str());
+    int f = callbackMap[hash];
+    if(f == 0) server.send(404, "text/plain", "No callback registered for this route");
+    else {
+      caml_callback(callbackMap[hash], Val_unit);
+      // If the client is still connected (the callback didn't send a response, we send a default one)
+      if(server.client()) server.send(200, "text/plain", "OK");
+    }
   }
+}
+
+void esp8266_server_on(char *route, int f) {
+  callbackMap[hashRoute(route)] = f;
 }

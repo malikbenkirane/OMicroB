@@ -195,7 +195,7 @@ void ESP8266WebServer::handleClient() {
     }
 
     _contentLength = CONTENT_LENGTH_NOT_SET;
-    _handleRequest();
+    // _handleRequest();
 
     if (!_currentClient.connected()) {
       _currentClient = WiFiClient();

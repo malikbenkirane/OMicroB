@@ -25,5 +25,9 @@ external millis: unit -> int = "caml_esp8266_millis" [@@noalloc]
 val serial_write: string -> unit
 val serial_read: unit -> string
 
-(** Starts a server and handle requests (does not return !) *)
+(** Starts a server *)
 external start_server: string -> string -> unit = "caml_esp8266_start_server" [@@noalloc]
+(* Sets a callback for a given route *)
+external server_on: string -> (unit -> unit) -> unit = "caml_esp8266_server_on" [@@noalloc]
+(* Handle a client if there is one (non-blocking) *)
+external server_handle_client: unit -> unit = "caml_esp8266_server_handle_client" [@@noalloc]

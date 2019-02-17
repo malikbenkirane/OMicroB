@@ -130,6 +130,24 @@ value caml_esp8266_start_server(value ssid, value passwd) {
   return Val_unit;
 }
 
+value caml_esp8266_server_on(value route, value f) {
+#ifdef __OCAML__
+  esp8266_server_on(String_val(route), f);
+#else
+  int n = string_length(route); int i;
+  char buf[n+1];
+  for(i = 0; i < n; i++) buf[i] = String_field(route, i);
+  buf[n] = '\0';
+  esp8266_server_on(buf, f);
+#endif
+  return Val_unit;
+}
+
+value caml_esp8266_server_handle_client() {
+  esp8266_server_handle_client();
+  return Val_unit;
+}
+
 #endif
 
 /******************************************************************************/

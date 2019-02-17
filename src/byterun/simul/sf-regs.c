@@ -605,7 +605,15 @@ char esp8266_serial_read_char() {
 /******************************************************************************/
 
 void esp8266_start_server(char *ssid, char *passwd) {
-  printf("Starting server with ssid: %s and password: %s, of course this won't work in the simulation :p\n", ssid, passwd);
+  printf("Starting server with ssid: %s and password: %s\n", ssid, passwd);
+}
+
+void esp8266_server_on(char *route, int f) {
+  printf("Set callback for route %s\n", route);
+}
+
+void esp8266_server_handle_client() {
+  printf("Handling a client\n");
 }
 
 /******************************************************************************/
