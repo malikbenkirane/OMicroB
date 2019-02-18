@@ -25,14 +25,17 @@ external millis: unit -> int = "caml_esp8266_millis" [@@noalloc]
 val serial_write: string -> unit
 val serial_read: unit -> string
 
-external start_server: string -> string -> unit = "caml_esp8266_start_server" [@@noalloc]
-(** Starts a server *)
+module Server : sig
+  external start: string -> string -> unit = "caml_esp8266_start_server" [@@noalloc]
+  (** Starts a server *)
 
-val server_on: string -> (unit -> unit) -> unit
-(** Sets a callback for a given route *)
 
-external server_handle_client: unit -> unit = "caml_esp8266_server_handle_client" [@@noalloc]
-(** Handle a client if there is one (non-blocking) *)
+  external handle_client: unit -> unit = "caml_esp8266_server_handle_client" [@@noalloc]
+  (** Handle a client if there is one (non-blocking) *)
 
-external server_send_html: string -> unit = "caml_esp8266_server_send_html" [@@noalloc]
-(** Send back html to the client. You can only send one response per callback (the client is disconnected afterwards) *)
+  external send_html: string -> unit = "caml_esp8266_server_send_html" [@@noalloc]
+  (** Send back html to the client. You can only send one response per callback (the client is disconnected afterwards) *)
+
+  val on: string -> (unit -> unit) -> unit
+  (** Sets a callback for a given route *)
+end
