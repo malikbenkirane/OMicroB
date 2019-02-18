@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #endif
 
+#ifdef __ESP8266__
+#include "Arduino.h"
+#endif
+
 #include "debug.h"
 #include "values.h"
 #include "fail.h"
@@ -260,6 +264,10 @@ static inline void interp(void) {
     */
     /* avr_serial_init(); */
     /* avr_serial_write('!'); */
+#endif
+
+#ifdef __ESP8266__
+    ESP.wdtFeed();
 #endif
 
     switch(read_opcode()){
