@@ -30,7 +30,7 @@ let print_image i =
       if (List.length r) <> 5 then invalid_arg "print_image";
       String.concat "," (List.rev (List.rev_map
                                      (fun l -> match l with LOW -> "0" | HIGH -> "255") r)
-    )) i)) in
+                        )) i)) in
   unsafe_print_image (s^"\n")
 
 external button_is_pressed: button -> bool = "caml_microbit_button_is_pressed" [@@noalloc]
@@ -67,17 +67,17 @@ external delay: int -> unit = "caml_microbit_delay" [@@noalloc]
 
 external millis : unit -> int = "caml_microbit_millis" [@@noalloc]
 
-external serial_write_char: char -> unit = "caml_microbit_serial_write_char" [@@noalloc]
+module Serial = struct
+  external write_char: char -> unit = "caml_microbit_serial_write_char" [@@noalloc]
+  let write s = String.iter write_char s
 
-let serial_write s = String.iter serial_write_char s
-
-external serial_read_char: unit -> char = "caml_microbit_serial_read_char" [@@noalloc]
-
-let serial_read () =
-  let s = ref ""
-  and c = ref (serial_read_char ()) in
-  while((int_of_char !c) <> 0) do
-    s := (!s^(String.make 1 !c));
-    c := (serial_read_char ())
-  done;
-  String.sub !s 0 ((String.length !s)-1)
+  external read_char: unit -> char = "caml_microbit_serial_read_char" [@@noalloc]
+  let read () =
+    let s = ref ""
+    and c = ref (read_char ()) in
+    while((int_of_char !c) <> 0) do
+      s := (!s^(String.make 1 !c));
+      c := (read_char ())
+    done;
+    if(String.length !s > 0) then String.sub !s 0 ((String.length !s)-1) else !s
+end

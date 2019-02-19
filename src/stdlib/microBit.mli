@@ -34,6 +34,7 @@ external delay: int -> unit = "caml_microbit_delay" [@@noalloc]
 
 external millis: unit -> int = "caml_microbit_millis" [@@noalloc]
 
-val serial_write: string -> unit
-
-val serial_read: unit -> string
+module Serial: sig
+  val write: string -> unit
+  val read: unit -> string
+end
