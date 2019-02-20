@@ -528,7 +528,9 @@ let ccall arch ooid prim args =
       | "caml_esp8266_pin_mode" | "caml_esp8266_digital_write" | "caml_esp8266_digital_read"
       | "caml_esp8266_analog_write" | "caml_esp8266_analog_read"
       | "caml_esp8266_serial_write_char" | "caml_esp8266_serial_read_char"
-      | "caml_esp8266_delay" | "caml_esp8266_millis" -> ()
+      | "caml_esp8266_delay" | "caml_esp8266_millis"
+      | "caml_esp8266_start_server" | "caml_esp8266_server_on"
+      | "caml_esp8266_server_handle_client" | "caml_esp8266_server_send_html" -> ()
       | _ ->
         let print_arg arg =
           let buf = Buffer.create 16 in
