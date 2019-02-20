@@ -582,6 +582,8 @@ void microbit_print_image(char *str) {
   printf("%s\n", str);
 }
 
+void microbit_clear_screen() {}
+
 int microbit_button_is_pressed(int b) {
   return 0;
 }
@@ -607,6 +609,13 @@ void microbit_delay(int ms) {
   delay(ms);
 }
 
+int microbit_millis() {
+  printf("millis()\n");
+  return 0;
+}
+
+/******************************************************************************/
+
 void microbit_serial_write_char(char c) {
   printf("%c", c);
 }
@@ -615,7 +624,10 @@ char microbit_serial_read_char() {
   return 0;
 }
 
-int microbit_millis() {
-  printf("millis()\n");
-  return 0;
-}
+/*****************************************************************************/
+
+int microbit_accelerometer_x() { return 0; }
+int microbit_accelerometer_y() { return 0; }
+int microbit_accelerometer_z() { return 0; }
+int microbit_accelerometer_pitch() { return 0; }
+int microbit_accelerometer_roll() { return 0; }

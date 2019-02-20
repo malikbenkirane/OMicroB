@@ -27,14 +27,20 @@ void microbit_print_string(char *str);
 void microbit_print_int(int i);
 void microbit_write_pixel(int x, int y, int l);
 void microbit_print_image(char *str);
+void microbit_clear_screen();
 int microbit_button_is_pressed(int b);
 void microbit_digital_write(int p, int l);
 int microbit_digital_read(int p);
 void microbit_analog_write(int p, int l);
 int microbit_analog_read(int p);
 void microbit_delay(int ms);
+int microbit_millis();
 void microbit_serial_write_char(char c);
 char microbit_serial_read_char();
-int microbit_millis();
+int microbit_accelerometer_x();
+int microbit_accelerometer_y();
+int microbit_accelerometer_z();
+int microbit_accelerometer_pitch();
+int microbit_accelerometer_roll();
 
 #endif

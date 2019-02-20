@@ -33,6 +33,8 @@ let print_image i =
                         )) i)) in
   unsafe_print_image (s^"\n")
 
+external clear_screen: unit -> unit = "caml_microbit_clear_screen" [@@noalloc]
+
 external button_is_pressed: button -> bool = "caml_microbit_button_is_pressed" [@@noalloc]
 
 let a_is_pressed () = button_is_pressed A
@@ -80,4 +82,12 @@ module Serial = struct
       c := (read_char ())
     done;
     if(String.length !s > 0) then String.sub !s 0 ((String.length !s)-1) else !s
+end
+
+module Accelerometer = struct
+  external x: unit -> int = "caml_microbit_accelerometer_x" [@@noalloc]
+  external y: unit -> int = "caml_microbit_accelerometer_y" [@@noalloc]
+  external z: unit -> int = "caml_microbit_accelerometer_z" [@@noalloc]
+  external pitch: unit -> int = "caml_microbit_accelerometer_pitch" [@@noalloc]
+  external roll: unit -> int = "caml_microbit_accelerometer_roll" [@@noalloc]
 end

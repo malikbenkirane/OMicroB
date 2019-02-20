@@ -138,6 +138,11 @@ value caml_microbit_print_image(value s) {
   return Val_unit;
 }
 
+value caml_microbit_clear_screen() {
+  microbit_clear_screen();
+  return Val_unit;
+}
+
 value caml_microbit_button_is_pressed(value b) {
   return Val_bool(microbit_button_is_pressed(Int_val(b)));
 }
@@ -165,6 +170,12 @@ value caml_microbit_delay(value ms) {
   return Val_unit;
 }
 
+value caml_microbit_millis() {
+  return Val_int(microbit_millis());
+}
+
+/******************************************************************************/
+
 value caml_microbit_serial_write_char(value c) {
   microbit_serial_write_char((char) Int_val(c));
   return Val_unit;
@@ -174,8 +185,26 @@ value caml_microbit_serial_read_char() {
   return Val_int(microbit_serial_read_char());
 }
 
-value caml_microbit_millis() {
-  return Val_int(microbit_millis());
+/******************************************************************************/
+
+value caml_microbit_accelerometer_x() {
+  return Val_int(microbit_accelerometer_x());
+}
+
+value caml_microbit_accelerometer_y() {
+  return Val_int(microbit_accelerometer_y());
+}
+
+value caml_microbit_accelerometer_z() {
+  return Val_int(microbit_accelerometer_z());
+}
+
+value caml_microbit_accelerometer_pitch() {
+  return Val_int(microbit_accelerometer_pitch());
+}
+
+value caml_microbit_accelerometer_roll() {
+  return Val_int(microbit_accelerometer_roll());
 }
 
 #endif

@@ -18,6 +18,8 @@ val write_pixel: int -> int -> level -> unit
 
 val print_image: level list list -> unit
 
+val clear_screen: unit -> unit
+
 val a_is_pressed: unit -> bool
 
 val b_is_pressed: unit -> bool
@@ -37,4 +39,21 @@ external millis: unit -> int = "caml_microbit_millis" [@@noalloc]
 module Serial: sig
   val write: string -> unit
   val read: unit -> string
+end
+
+module Accelerometer: sig
+  val x: unit -> int
+  (** Returns the x acceleration in milli-gs *)
+
+  val y: unit -> int
+  (** Returns the y acceleration in milli-gs *)
+
+  val z: unit -> int
+  (** Returns the z acceleration in milli-gs *)
+
+  val pitch: unit -> int
+  (** Returns the pitch, in degrees *)
+
+  val roll: unit -> int
+  (** Returns the roll, in degrees *)
 end
