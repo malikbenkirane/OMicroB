@@ -207,6 +207,17 @@ value caml_microbit_accelerometer_roll() {
   return Val_int(microbit_accelerometer_roll());
 }
 
+/******************************************************************************/
+
+value caml_microbit_compass_calibrate() {
+  microbit_compass_calibrate();
+  return Val_unit;
+}
+
+value caml_microbit_compass_heading() {
+  return Val_int(microbit_compass_heading());
+}
+
 #endif
 
 /******************************************************************************/

@@ -42,5 +42,7 @@ int microbit_accelerometer_y();
 int microbit_accelerometer_z();
 int microbit_accelerometer_pitch();
 int microbit_accelerometer_roll();
+void microbit_compass_calibrate();
+int microbit_compass_heading();
 
 #endif

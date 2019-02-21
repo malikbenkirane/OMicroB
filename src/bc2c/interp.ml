@@ -526,13 +526,14 @@ let ccall arch ooid prim args =
       | "caml_debug_trace" | "caml_debug_tracei"
       | "caml_random_init" | "caml_random_bits" | "caml_random_bool"
       | "caml_microbit_print_string" | "caml_microbit_print_int"
-      | "caml_microbit_write_pixel" | "caml_microbit_print_image"
+      | "caml_microbit_write_pixel" | "caml_microbit_print_image" | "caml_microbit_clear_screen"
       | "caml_microbit_digital_write" | "caml_microbit_digital_read"
       | "caml_microbit_analog_write" | "caml_microbit_analog_read"
       | "caml_microbit_serial_send_char" | "caml_microbit_serial_read_char"
       | "caml_microbit_delay" | "caml_microbit_millis"
       | "caml_microbit_accelerometer_x" | "caml_microbit_accelerometer_y" | "caml_microbit_accelerometer_z"
-      | "caml_microbit_accelerometer_pitch" | "caml_microbit_accelerometer_roll" -> ()
+      | "caml_microbit_accelerometer_pitch" | "caml_microbit_accelerometer_roll"
+      | "caml_microbit_compass_calibrate" | "caml_microbit_compass_heading" -> ()
       | _ ->
         let print_arg arg =
           let buf = Buffer.create 16 in

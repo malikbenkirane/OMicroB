@@ -631,3 +631,8 @@ int microbit_accelerometer_y() { return 0; }
 int microbit_accelerometer_z() { return 0; }
 int microbit_accelerometer_pitch() { return 0; }
 int microbit_accelerometer_roll() { return 0; }
+
+/*****************************************************************************/
+
+void microbit_compass_calibrate() {}
+int microbit_compass_heading() { return 0; }

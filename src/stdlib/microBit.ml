@@ -91,3 +91,8 @@ module Accelerometer = struct
   external pitch: unit -> int = "caml_microbit_accelerometer_pitch" [@@noalloc]
   external roll: unit -> int = "caml_microbit_accelerometer_roll" [@@noalloc]
 end
+
+module Compass = struct
+  external calibrate: unit -> unit = "caml_microbit_compass_calibrate" [@@noalloc]
+  external heading: unit -> int = "caml_microbit_compass_heading" [@@noalloc]
+end

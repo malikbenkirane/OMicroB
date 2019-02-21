@@ -90,3 +90,10 @@ int microbit_accelerometer_roll() {
   return uBit.accelerometer.getRoll();
 }
 
+void microbit_compass_calibrate() {
+  uBit.compass.calibrate();
+}
+
+int microbit_compass_heading() {
+  return uBit.compass.heading();
+}

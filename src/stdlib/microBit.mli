@@ -57,3 +57,11 @@ module Accelerometer: sig
   val roll: unit -> int
   (** Returns the roll, in degrees *)
 end
+
+module Compass: sig
+  val calibrate: unit -> unit
+  (** Calibrate the compass *)
+
+  val heading: unit -> int
+  (** Heading of the device relative to magnetic north (in degrees) *)
+end
